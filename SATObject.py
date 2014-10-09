@@ -22,10 +22,12 @@ class SATObject(object):
             isNeg = 1 if (literal[0]=='-') else 0
             # Variable is a literal with (possible) negation removed
             # Add variable to dict as the next integer available for reference
-            self.varDict[len(self.varDict)] = literal[isNeg:]
+            if literal[isNeg:] not in self.varDict:
+                self.varDict[literal[isNeg:]] = len(self.varDict) 
+            # Get recasted variable
+            var = self.varDict[literal[isNeg:]]
             # Reform literal from new variable notation (2*v or 2*v+1 if neg) 
-            # Note len of dict is the variable value
-            literal = len(self.varDict) << 1 | isNeg
+            literal = var << 1 | isNeg
             # Append to the list for this clas
             clause.add(literal)
         # Add this clause into the group of clauses
