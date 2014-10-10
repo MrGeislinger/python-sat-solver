@@ -40,6 +40,12 @@ class SATObject(object):
 	# Alternative contructor to make SAT object  
     @classmethod
     def getFromFile(cls,cnfFile):
+        '''
+           Alternative constructor that reads CNF file and imports clauses into 
+           SAT object instance. 
+
+           Input: String of CNF filename
+        '''
         # Create instance of this object
         satInstance = cls()
         # Get lines from CNF data and then close file
