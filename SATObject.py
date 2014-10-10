@@ -22,9 +22,6 @@ class SATObject(object):
             # Save whether negation (is either 0 or 1)
             isNeg = 1 if (literal[0]=='-') else 0
             # Variable is a literal with (possible) negation removed
-            # Add variable to dict as the next integer available for reference
-            #if literal[isNeg:] not in self.varDict:
-            #    self.varDict[literal[isNeg:]] = len(self.varDict) 
             # Get recasted variable
             var = self.varDict[literal[isNeg:]]
             # Reform literal from new variable notation (2*v or 2*v+1 if neg) 
@@ -59,10 +56,39 @@ class SATObject(object):
             satInstance.getClauseFromLine(line)
         return satInstance
         
-    #Get string representation of literal (integer representation)
-    def getLiteralStr(self,literal):
-        # Check if negated and convert literal to variable with bit shift
-        if (literal & 1):
-            return "-%d" %(literal >> 1) #add negative
+    # Get string representation of literal either by direct conversion or as
+    # defined by varDict. 
+    # Ex: getLiteralStr(5) -> '-2'
+    #
+    # Input: int represented by literal (2*v or 2*v+1 where v in {0,1,..}
+    # Output: string represented by literal or 'undefined' if not valid
+    def getLiteralStr(self,literal,fromDict=False):
+        '''
+            Gives representation of literal to the string. 
+            Use `fromDict = True` to return literal as defined by varDict.
+
+            See getLiteralStrFromDict.
+        '''
+        # Use varDict definition after conversion
+        if fromDict:
+            return self.getLiteralStrFromDict(literal)
         else:
-            return  "%d" %(literal >> 1)
+            # Check if literal can be converted properly (an int and greater than 0)
+            if isinstance(literal,int) and (literal < 0):
+        	    return "undefined"
+            # Check if negated and convert literal to variable with bit shift
+            elif (literal & 1): 
+                return "-%d" %str(literal >> 1)
+            else:
+                return "%d"  %str(literal >> 1)
+
+    # Get string representation of literal as defined from varDict
+    # Input: int represented by literal (2*v or 2*v+1 where v in {0,1,..}
+    # Output: string represented by literal or 'undefined' if not in varDict
+    def getLiteralStrFromDict(self,literal):
+        if str(literal >> 1) not in varDict: #check if literal is defined/valid
+        	return "undefined"
+        elif (literal & 1): #add negative
+            return "-%d" %self.varDict[str(literal >> 1)]
+        else:
+            return "%d"  %self.varDict[str(literal >> 1)]
