@@ -86,9 +86,23 @@ class SATObject(object):
     # Input: int represented by literal (2*v or 2*v+1 where v in {0,1,..}
     # Output: string represented by literal or 'undefined' if not in varDict
     def getLiteralStrFromDict(self,literal):
-        if str(literal >> 1) not in varDict: #check if literal is defined/valid
+        '''
+        	Gives string representation of literal as defined by varDict.
+        	Converts literal and then returns representation in varDict.
+
+        	Returns: 
+        		"undefined" if not in varDict or can't be coverted
+        		"-#"        if negated literal
+        		"#"         if not negated literal
+
+        '''
+        # Check if literal is defined/valid
+        if isinstance(literal,int) and (literal < 0):
+             return "undefined"
+        elif str(literal >> 1) not in self.varDict: 
         	return "undefined"
-        elif (literal & 1): #add negative
+        # Add negative
+        elif (literal & 1): 
             return "-%d" %self.varDict[str(literal >> 1)]
         else:
             return "%d"  %self.varDict[str(literal >> 1)]
