@@ -13,7 +13,7 @@ class SATObject(object):
         self.clauses = []
 
     # Reads in clause from a line, but assumes every line ends with zero and 
-    # full clause is listed on this line
+    # full clause is listed on this line.
     def getClauseFromLine(self,clauseLine):
         # Clause won't contain repeating literals (CNF) 
         clause = set()
@@ -78,9 +78,9 @@ class SATObject(object):
         	    return "undefined"
             # Check if negated and convert literal to variable with bit shift
             elif (literal & 1): 
-                return "-%d" %str(literal >> 1)
+                return "-%d" %(literal >> 1)
             else:
-                return "%d"  %str(literal >> 1)
+                return "%d"  %(literal >> 1)
 
     # Get string representation of literal as defined from varDict
     # Input: int represented by literal (2*v or 2*v+1 where v in {0,1,..}
