@@ -42,7 +42,7 @@ class SATObject(object):
 	
 	# Alternative contructor to make SAT object  
     @classmethod
-    def getFromFile(cls,cnfFile,hasSet=True):
+    def getFromFile(cls,cnfFile):
         # Create instance of this object
         satInstance = cls()
         # Get lines from CNF data and then close file
@@ -58,3 +58,4 @@ class SATObject(object):
         for line in cnfLines:
             satInstance.getClauseFromLine(line)
         return satInstance
+
