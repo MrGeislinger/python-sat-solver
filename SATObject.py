@@ -39,10 +39,12 @@ class SATObject(object):
     def setVarDict(self,numOfVars):
         for v in range(numOfVars):
             self.varDict[str(v+1)] = v
-
-    def getFromFile(self,cnfFile,hasSet=True):
+	
+	# Alternative contructor to make SAT object  
+    @classmethod
+    def getFromFile(cls,cnfFile,hasSet=True):
         # Create instance of this object
-        # satInstance = cls
+        satInstance = cls()
         # Get lines from CNF data and then close file
         with open(cnfFile) as f:
             cnfLines = f.readlines()
@@ -51,7 +53,8 @@ class SATObject(object):
         # Get the number of varaibles and clauses specified by file
         numOfVars, numOfClauses = metaData[2], metaData[3]
         # Add variables to dictionary for reference
-        self.setVarDict(int(numOfVars))
+        satInstance.setVarDict(int(numOfVars))
         # Add clauses from file (skip the first line of metadata)
         for line in cnfLines:
-            self.getClauseFromLine(line)
+            satInstance.getClauseFromLine(line)
+        return satInstance
