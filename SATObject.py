@@ -39,7 +39,7 @@ class SATObject(object):
     def setVarDict(self,numOfVars):
         for v in range(numOfVars):
             self.varDict[str(v+1)] = v
-	
+
 	# Alternative contructor to make SAT object  
     @classmethod
     def getFromFile(cls,cnfFile):
@@ -58,4 +58,11 @@ class SATObject(object):
         for line in cnfLines:
             satInstance.getClauseFromLine(line)
         return satInstance
-
+        
+    #Get string representation of literal (integer representation)
+    def getLiteralStr(self,literal):
+        # Check if negated and convert literal to variable with bit shift
+        if (literal & 1):
+            return "-%d" %(literal >> 1) #add negative
+        else:
+            return  "%d" %(literal >> 1)
