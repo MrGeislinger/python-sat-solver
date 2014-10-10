@@ -112,3 +112,27 @@ class SATObject(object):
             return "-%d" %self.varDict[str(literal >> 1)]
         else:
             return "%d"  %self.varDict[str(literal >> 1)]
+
+    #
+    def getClauseStr(self,clause,joinerStr = ",",fromDict=True):
+        clauseStr = ""
+        # Build up string by joining
+        for literal in clause:
+            clauseStr += self.getLiteralStr(literal,fromDict) + joinerStr
+        # Remove last joiner before returning
+        return clauseStr[:-len(joinerStr)]
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
