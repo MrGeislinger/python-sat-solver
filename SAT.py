@@ -40,7 +40,7 @@ class SAT(object):
             	var = self.varDict[var_Str]
             else:
             	# Append variable to the next spot in dictionary
-            	var = len(self.varDict)
+            	var = len(self.varDict) >> 1 #divide by 2 (floor) 
             	self.varDict[var_Str] = var
                 # Add reverse look up by string version for easy printing
                 self.varDict[var] = var_Str
@@ -54,16 +54,21 @@ class SAT(object):
     # Add missing variables to varDict skipped over when reading file
     # Function assumes that the number of variables (numOfVars) is correct 
     def addMissingVarsToDict(self,numOfVars):
-        # Lambda function to check if int (else gives -1 since var can't <0)
-        isInt = lambda x: x if isinstance(x,int) else -1 
-        # Get vars from varDict keys (not strings; vars given by file)
-        varsFromFile = set( map(isInt,self.varDict.keys()) ) #sll non-int -> -1
+        # Converts to int if str (else gives -1 since var can't <0)
+        isStr = lambda x: int(x) if isinstance(x,str) else -1  
+        # Get vars from varDict keys (only str types; vars given by file)
+        varsFromFile = set( map(isInt,self.varDict.keys()) ) #all non-str -> -1
+        varsFromFile.add(-1)    #ensure something to remove
         varsFromFile.remove(-1) #get rid of the mappings from non-ints
-        # Get the vars not already defined in dictionary
+        # Get the vars not already defined in varDict
         missingVars = varsFromFile.symmetric_difference(set(range(1,numOfVars+1)))
-        # Iterate over missing variables & add them to dictionary in next spot
+        # Iterate over missing variables & add them to varDict in next spot
         for var in missingVars:
-            self.varDict[var] = len(self.varDict)
+            varStr = str(var) #convert to string (would've been given by file)
+            varInt =  len(self.varDict) >> 1 #divide by 2 to get next spot          
+            self.varDict[varStr] = varInt 
+            self.varDict[varInt] = varStr
+        return varsFromFile,missingVars
 
     @classmethod
     def getFromFile(cls,cnfFile):
