@@ -11,15 +11,15 @@ class Solver(object):
         # Import the SAT object
         #import SAT
         #
-        self.sat = SAT.initFromFile(dataFile)
+        self.SAT = SAT.initFromFile(dataFile)
         # Create SAT object from data file
-        #self.sat = .initFromFile(dataFile)
+        #self.SAT = .initFromFile(dataFile)
         # Assignment of truth values (0,1=True,False) for SAT object
         self.assignment = {}
-        # Lambda function to map only ints in sat.varDict to assignment 
+        # Lambda function to map only ints in SAT.varDict to assignment 
         isInt = lambda x : x if isinstance(x,int) else False
-        # Iterate over just the int keys from sat.varDict
-        for var in map(isInt,self.sat.varDict.keys()):
+        # Iterate over just the int keys from SAT.varDict
+        for var in map(isInt,self.SAT.varDict.keys()):
             # Initiate each variable assignment with no assignment (None)
             self.assignment[var] = None
 
@@ -35,4 +35,27 @@ class Solver(object):
         if None in self.assignment.values():
             return False
         # Check the all clauses to see if assignment is consistent
-        return True #will need to change to check all assignments with claues
+        for clause in self.SAT.clauses:
+            # Return False if any clause is inconsistent with assignment
+            if not self.isClauseConsistent(clause):
+                return False
+        # All clauses passed the check so SAT object is solved 
+        return True 
+
+    def isClauseConsistent(self,clause):
+        #
+        isTrue = 0 # Only greater than 0 if at least a one literal is true
+        for literal in clause:
+            # Get variable from literal
+            var = self.SAT.getVar(literal)
+            # Assignment is None, 0 (False) or 1 (True)
+            value = self.assignment[var]
+            # Check that variable has been assigned
+            if value == None:
+            	return False
+            # Add value assigned to testing sum (isTrue)
+            else:
+                # Negate value if literal in clause is negated
+            	isTrue += value ^ self.SAT.isNeg(literal) #bitwise-XOR
+        # Test if at least one literal evaluated is True (1)
+        return True if (isTrue > 0) else False
