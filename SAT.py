@@ -65,12 +65,12 @@ class SAT(object):
             	var = self.varDict[var_Str]
             else:
             	# Append variable to the next spot in dictionary
-            	var = len(self.varDict) >> 1 #divide by 2 (floor) 
+            	var = len(self.varDict) >> 1 #divide by 2 since len is 2n
             	self.varDict[var_Str] = var
                 # Add reverse look up by string version for easy printing
                 self.varDict[var] = var_Str
             # Reform literal from new variable notation (2*v or 2*v+1 if neg) 
-            literal = var << 1 | isNeg
+            literal = self.getLit(var,isNeg) #var << 1 | isNeg
             # Add literal for this clause
             clause.add(literal)
         # Add this clause into the group of clauses
@@ -90,7 +90,7 @@ class SAT(object):
         # Iterate over missing variables & add them to varDict in next spot
         for var in missingVars:
             varStr = str(var) #convert to string (would've been given by file)
-            varInt =  len(self.varDict) >> 1 #divide by 2 to get next spot          
+            varInt = len(self.varDict) >> 1 #divide by 2 to get next spot          
             self.varDict[varStr] = varInt 
             self.varDict[varInt] = varStr
        
@@ -123,11 +123,11 @@ class SAT(object):
             # Check if literal can be converted properly (an int and greater than 0)
             if not isinstance(literal,int) or (literal < 0):
         	    return "undefined"
-            # Check if negated and convert literal to variable with bit shift
-            elif (literal & 1): 
-                return "-%d" %(literal >> 1)
+            # Check if negated and convert literal to variable 
+            elif self.isNeg(literal) == 1: 
+                return "-%d" %self.getVar(literal)
             else:
-                return "%d"  %(literal >> 1)
+                return "%d"  %self.getVar(literal)
 
     # Get string representation of literal as defined from varDict
     # Input: int represented by literal (2*v or 2*v+1 where v in {0,1,..}
@@ -143,16 +143,19 @@ class SAT(object):
         		"#"         if not negated literal
 
         '''
-        # Check if literal is defined/valid
+        #
+        var = self.getVar(literal)
+        # Check if literal is valid/defined
         if not isinstance(literal,int) or (literal < 0):
              return "undefined"
-        elif (literal >> 1) not in self.varDict: 
+        elif var not in self.varDict: 
         	return "undefined"
-        # Add negative
-        elif (literal & 1): 
-            return "-%s" %self.varDict[literal >> 1]
+        # Add negative to the string variable
+        elif self.isNeg(literal) == 1: 
+            return "-%s" %self.varDict[var]
+        # Return the string variable
         else:
-            return "%s"  %self.varDict[literal >> 1]
+            return "%s"  %self.varDict[var]
 
     ###################################
     # Literal and Variable Operations #
