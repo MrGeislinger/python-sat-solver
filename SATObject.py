@@ -12,6 +12,17 @@ class SATObject(object):
         # List of clauses represented with sets of literals
         self.clauses = []
 
+    # Return string representation of SAT object (clauses)
+    def __str__(self):
+        # String to build up and then return
+        string = ""
+        # Itrerate over the clauses to get the string representation
+        for clause in self.clauses:
+            string += "{"
+            string += self.getClauseStr(clause)
+            string += "}\n"
+        return string
+
     # Reads in clause from a line, but assumes every line ends with zero and 
     # full clause is listed on this line.
     def getClauseFromLine(self,clauseLine):
@@ -121,18 +132,4 @@ class SATObject(object):
             clauseStr += self.getLiteralStr(literal,fromDict) + joinerStr
         # Remove last joiner before returning
         return clauseStr[:-len(joinerStr)]
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
