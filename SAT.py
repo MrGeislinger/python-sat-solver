@@ -33,8 +33,15 @@ class SAT(object):
             # Save whether negation (is either 0 or 1)
             isNeg = 1 if (literal[0]=='-') else 0
             # Variable is a literal with (possible) negation removed
+            var_ = int(literal[isNeg:])
             # Get recasted variable
-            var = self.varDict[literal[isNeg:]]
+            if var_ in self.varDict:
+            	# Get variable from dictionary
+            	var = self.varDict[var_]
+            else:
+            	# Get variable by appending it to the next spot in dictionary
+            	var = len(self.varDict)
+            	self.varDict[var_] = var
             # Reform literal from new variable notation (2*v or 2*v+1 if neg) 
             literal = var << 1 | isNeg
             # Add literal for this clause
