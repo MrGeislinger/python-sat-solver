@@ -154,4 +154,23 @@ class SAT(object):
         else:
             return "%s"  %self.varDict[literal >> 1]
 
+    ###################################
+    # Literal and Variable Operations #
+    ###################################
+
+    # Returns 1 if negated, 0 if not negated
+    def isNeg(self,literal):
+        return (literal & 1) #bit comparison
+
+    # Returns negated literal
+    def negate(self,literal):
+        return (literal ^ 1) #negate the literal (2*v) <-> (2*v+1)
+
+    # Returns variable that holds a literal
+    def getVar(self,literal):
+        return (literal >> 1) #essentially a division by 2 (floor)
+
+    # Returns literal from variable (optional negation: isNegated=1)
+    def getLit(self,var,isNegated=0):
+        return (var << 1 | isNegated)
 
