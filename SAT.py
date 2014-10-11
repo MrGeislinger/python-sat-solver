@@ -1,7 +1,7 @@
 #
 
 # SAT object that will have work done onto
-class SATObject(object):
+class SAT(object):
     """
     """
 
