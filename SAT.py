@@ -127,13 +127,13 @@ class SAT(object):
         # Check if literal is defined/valid
         if not isinstance(literal,int) or (literal < 0):
              return "undefined"
-        elif str(literal >> 1) not in self.varDict: 
+        elif (literal >> 1) not in self.varDict: 
         	return "undefined"
         # Add negative
         elif (literal & 1): 
-            return "-%d" %self.varDict[str(literal >> 1)]
+            return "-%d" %self.varDict[literal >> 1]
         else:
-            return "%d"  %self.varDict[str(literal >> 1)]
+            return "%d"  %self.varDict[literal >> 1]
 
     #
     def getClauseStr(self,clause,joinerStr = ",",fromDict=True):
