@@ -57,7 +57,7 @@ class SAT(object):
         # Converts to int if str (else gives -1 since var can't <0)
         isStr = lambda x: int(x) if isinstance(x,str) else -1  
         # Get vars from varDict keys (only str types; vars given by file)
-        varsFromFile = set( map(isInt,self.varDict.keys()) ) #all non-str -> -1
+        varsFromFile = set( map(isStr,self.varDict.keys()) ) #all non-str -> -1
         varsFromFile.add(-1)    #ensure something to remove
         varsFromFile.remove(-1) #get rid of the mappings from non-ints
         # Get the vars not already defined in varDict
@@ -68,7 +68,6 @@ class SAT(object):
             varInt =  len(self.varDict) >> 1 #divide by 2 to get next spot          
             self.varDict[varStr] = varInt 
             self.varDict[varInt] = varStr
-        return varsFromFile,missingVars
 
     @classmethod
     def getFromFile(cls,cnfFile):
