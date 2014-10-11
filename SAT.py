@@ -23,6 +23,31 @@ class SAT(object):
             string += "}\n"
         return string
 
+    # Alternative constructor by using data file in CNF format
+    @classmethod
+    def initFromFile(cls,cnfFile):
+        '''
+           Alternative constructor that reads CNF file and imports clauses into 
+           SAT object instance. 
+
+           Input: String of CNF filename
+        '''
+        # Create instance of this object
+        satInstance = cls()
+        # Get lines from CNF data and then close file
+        with open(cnfFile) as f:
+            cnfLines = f.readlines()
+        # First line gives us information of data format
+        metaData = cnfLines.pop(0).split()
+        # Get the number (int) of varaibles and clauses specified by file
+        numOfVars, numOfClauses = int(metaData[2]), int(metaData[3])
+        # Add clauses from file (skip the first line of metadata)
+        for line in cnfLines:
+            satInstance.getClauseFromLine(line)
+        # Add any missing variables that were missed when reading in file
+        #satInstance.addMissingVarsToDict(numOfVars)
+        return satInstance
+
     # Reads in clause from a line, but assumes every line ends with zero and 
     # full clause is listed on this line.
     def getClauseFromLine(self,clauseLine):
@@ -68,31 +93,16 @@ class SAT(object):
             varInt =  len(self.varDict) >> 1 #divide by 2 to get next spot          
             self.varDict[varStr] = varInt 
             self.varDict[varInt] = varStr
+       
+    #
+    def getClauseStr(self,clause,joinerStr = ",",fromDict=True):
+        clauseStr = ""
+        # Build up string by joining
+        for literal in clause:
+            clauseStr += self.getLiteralStr(literal,fromDict) + joinerStr
+        # Remove last joiner before returning
+        return clauseStr[:-len(joinerStr)]
 
-    @classmethod
-    def getFromFile(cls,cnfFile):
-        '''
-           Alternative constructor that reads CNF file and imports clauses into 
-           SAT object instance. 
-
-           Input: String of CNF filename
-        '''
-        # Create instance of this object
-        satInstance = cls()
-        # Get lines from CNF data and then close file
-        with open(cnfFile) as f:
-            cnfLines = f.readlines()
-        # First line gives us information of data format
-        metaData = cnfLines.pop(0).split()
-        # Get the number (int) of varaibles and clauses specified by file
-        numOfVars, numOfClauses = int(metaData[2]), int(metaData[3])
-        # Add clauses from file (skip the first line of metadata)
-        for line in cnfLines:
-            satInstance.getClauseFromLine(line)
-        # Add any missing variables that were missed when reading in file
-        #satInstance.addMissingVarsToDict(numOfVars)
-        return satInstance
-        
     # Get string representation of literal either by direct conversion or as
     # defined by varDict. 
     # Ex: getLiteralStr(5) -> '-2'
@@ -144,12 +154,4 @@ class SAT(object):
         else:
             return "%s"  %self.varDict[literal >> 1]
 
-    #
-    def getClauseStr(self,clause,joinerStr = ",",fromDict=True):
-        clauseStr = ""
-        # Build up string by joining
-        for literal in clause:
-            clauseStr += self.getLiteralStr(literal,fromDict) + joinerStr
-        # Remove last joiner before returning
-        return clauseStr[:-len(joinerStr)]
 
