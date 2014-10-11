@@ -33,15 +33,17 @@ class SAT(object):
             # Save whether negation (is either 0 or 1)
             isNeg = 1 if (literal[0]=='-') else 0
             # Variable is a literal with (possible) negation removed
-            var_ = int(literal[isNeg:])
-            # Get recasted variable
-            if var_ in self.varDict:
+            var_Str = literal[isNeg:]      #str version
+            # Get/create recasted variable with varDict
+            if var_Str in self.varDict:
             	# Get variable from dictionary
-            	var = self.varDict[var_]
+            	var = self.varDict[var_Str]
             else:
-            	# Get variable by appending it to the next spot in dictionary
+            	# Append variable to the next spot in dictionary
             	var = len(self.varDict)
-            	self.varDict[var_] = var
+            	self.varDict[var_Str] = var
+                # Add reverse look up by string version for easy printing
+                self.varDict[var] = var_Str
             # Reform literal from new variable notation (2*v or 2*v+1 if neg) 
             literal = var << 1 | isNeg
             # Add literal for this clause
@@ -52,8 +54,11 @@ class SAT(object):
     # Add missing variables to varDict skipped over when reading file
     # Function assumes that the number of variables (numOfVars) is correct 
     def addMissingVarsToDict(self,numOfVars):
-        # Get vars from varDict keys (vars given by file)
-        varsFromFile = set(self.varDict.keys())
+        # Lambda function to check if int (else gives -1 since var can't <0)
+        isInt = lambda x: x if isinstance(x,int) else -1 
+        # Get vars from varDict keys (not strings; vars given by file)
+        varsFromFile = set( map(isInt,self.varDict.keys()) ) #sll non-int -> -1
+        varsFromFile.remove(-1) #get rid of the mappings from non-ints
         # Get the vars not already defined in dictionary
         missingVars = varsFromFile.symmetric_difference(set(range(1,numOfVars+1)))
         # Iterate over missing variables & add them to dictionary in next spot
@@ -81,7 +86,7 @@ class SAT(object):
         for line in cnfLines:
             satInstance.getClauseFromLine(line)
         # Add any missing variables that were missed when reading in file
-        satInstance.addMissingVarsToDict(numOfVars)
+        #satInstance.addMissingVarsToDict(numOfVars)
         return satInstance
         
     # Get string representation of literal either by direct conversion or as
@@ -131,9 +136,9 @@ class SAT(object):
         	return "undefined"
         # Add negative
         elif (literal & 1): 
-            return "-%d" %self.varDict[literal >> 1]
+            return "-%s" %self.varDict[literal >> 1]
         else:
-            return "%d"  %self.varDict[literal >> 1]
+            return "%s"  %self.varDict[literal >> 1]
 
     #
     def getClauseStr(self,clause,joinerStr = ",",fromDict=True):
