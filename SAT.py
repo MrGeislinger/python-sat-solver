@@ -60,13 +60,6 @@ class SAT(object):
         for var in missingVars:
             self.varDict[var] = len(self.varDict)
 
-    # Takes in an integer and creates dictionary of that number
-    # Ex: setVarDict(3) -> {'1':0, '2':1, '3':2}
-    def setVarDict(self,numOfVars):
-        for v in range(numOfVars):
-            self.varDict[str(v+1)] = v
-
-	# Alternative contructor to make SAT object  
     @classmethod
     def getFromFile(cls,cnfFile):
         '''
@@ -82,11 +75,13 @@ class SAT(object):
             cnfLines = f.readlines()
         # First line gives us information of data format
         metaData = cnfLines.pop(0).split()
-        # Get the number of varaibles and clauses specified by file
-        numOfVars, numOfClauses = metaData[2], metaData[3]
+        # Get the number (int) of varaibles and clauses specified by file
+        numOfVars, numOfClauses = int(metaData[2]), int(metaData[3])
         # Add clauses from file (skip the first line of metadata)
         for line in cnfLines:
             satInstance.getClauseFromLine(line)
+        # Add any missing variables that were missed when reading in file
+        satInstance.addMissingVarsToDict(numOfVars)
         return satInstance
         
     # Get string representation of literal either by direct conversion or as
