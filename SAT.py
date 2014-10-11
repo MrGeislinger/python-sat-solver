@@ -49,6 +49,17 @@ class SAT(object):
         # Add this clause into the group of clauses
         self.clauses.append(clause)
 
+    # Add missing variables to varDict skipped over when reading file
+    # Function assumes that the number of variables (numOfVars) is correct 
+    def addMissingVarsToDict(self,numOfVars):
+        # Get vars from varDict keys (vars given by file)
+        varsFromFile = set(self.varDict.keys())
+        # Get the vars not already defined in dictionary
+        missingVars = varsFromFile.symmetric_difference(set(range(1,numOfVars+1)))
+        # Iterate over missing variables & add them to dictionary in next spot
+        for var in missingVars:
+            self.varDict[var] = len(self.varDict)
+
     # Takes in an integer and creates dictionary of that number
     # Ex: setVarDict(3) -> {'1':0, '2':1, '3':2}
     def setVarDict(self,numOfVars):
@@ -73,8 +84,6 @@ class SAT(object):
         metaData = cnfLines.pop(0).split()
         # Get the number of varaibles and clauses specified by file
         numOfVars, numOfClauses = metaData[2], metaData[3]
-        # Add variables to dictionary for reference
-        satInstance.setVarDict(int(numOfVars))
         # Add clauses from file (skip the first line of metadata)
         for line in cnfLines:
             satInstance.getClauseFromLine(line)
