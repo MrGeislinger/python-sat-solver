@@ -91,7 +91,7 @@ class SATObject(object):
             return self.getLiteralStrFromDict(literal)
         else:
             # Check if literal can be converted properly (an int and greater than 0)
-            if isinstance(literal,int) and (literal < 0):
+            if not isinstance(literal,int) or (literal < 0):
         	    return "undefined"
             # Check if negated and convert literal to variable with bit shift
             elif (literal & 1): 
@@ -114,7 +114,7 @@ class SATObject(object):
 
         '''
         # Check if literal is defined/valid
-        if isinstance(literal,int) and (literal < 0):
+        if not isinstance(literal,int) or (literal < 0):
              return "undefined"
         elif str(literal >> 1) not in self.varDict: 
         	return "undefined"
