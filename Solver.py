@@ -70,11 +70,30 @@ class Solver(object):
     	return watchlist
     
     # Updates the watchlist for 
-    def updateWatchlist(self,falseLiteral,assignment,verbose):
+    def updateWatchlist(self,falseLiteral):
 		#
 
 
 
-    # Basic SAT solver alogrithm
-    def solve(self):
+    # Basic SAT solver alogrithm that uses recursion
+    def simpleSolve(self,var):
+        # Check if this is the last assignment to end function call
+        if var == self.numOfVars:
+            yield self.assignment
+            return 
+
         #
+        for truthValue in [0,1]:
+            self.assignment[var] = truthValue
+            #
+            if self.updateWatchlist( self.SAT.getLit(var) ):
+                #
+                for truthValue in self.simpleSolve(var+1):
+                    #
+                    yield truthValue
+
+        #
+        self.assignment[var] = None
+
+
+
