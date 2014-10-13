@@ -59,16 +59,15 @@ class Solver(object):
         # Test if at least one literal evaluated is True (1)
         return True if (isTrue > 0) else False
 
-	# Create a watch list to make algoriths simple
-	def createWatchlist(self):
-        # Create a 2*numOfVars sized watchlist of empty lists
-		self.watchlist = [ [] for i in range(2*self.SAT.numOfVars) ]
-		# Watch the first literal in each clause
-		for clause in self.SAT.clauses
-			# Convert clause within watchlist to be a list
-    		self.watchlist[ list(clause)[0] ].append(clause)
-    
-    # Updates the watchlist for 
+    # Create a watchlist to make algorithms simple
+    def createWatchlist(self):
+        # Creat a 2*numOfVars sized watchlist of empty lists
+        self.watchlist = [ [] for i in range(2*self.SAT.numOfVars) ]
+        # Watch the first literal in each clause
+        for clause in self.SAT.clauses:
+            self.watchlist[ list(clause)[0] ].append(clause) #clause set to list
+
+    # Updates the watchlist 
     def updateWatchlist(self,falseLiteral):
 		#
         while watchlist[falseLiteral]:
@@ -79,8 +78,8 @@ class Solver(object):
                 v = self.SAT.getVar(alt)
                 a = self.SAT.isNeg(alt)
             #
-            if self.assignment[v] is None or 
-               self.assignment[v] == self.SAT.negate(a):
+            varAssignment = self.assignment[v]
+            if varAssignment is None or varAssignment == self.SAT.negate(a):
                 foundAlt = True
                 # Get rid of this clause since literal is now True
                 del self.watchlist[falseLiteral][0]
