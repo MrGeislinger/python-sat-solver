@@ -61,16 +61,18 @@ class Solver(object):
 
 	# Create a watch list to make algoriths simple
 	def createWatchlist(self):
-		self.watchlist = []
+        # Create a 2*numOfVars sized watchlist of empty lists
+		self.watchlist = [ [] for i in range(2*self.SAT.numOfVars) ]
 		# Watch the first literal in each clause
 		for clause in self.SAT.clauses
 			# Convert clause within watchlist to be a list
     		watchlist[ list(clause)[0] ].append(clause)
     	return watchlist
     
-    #
+    # Updates the watchlist for 
     def updateWatchlist(self,falseLiteral,assignment,verbose):
 		#
+
 
 
     # Basic SAT solver alogrithm
