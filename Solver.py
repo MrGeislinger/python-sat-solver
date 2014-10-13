@@ -66,8 +66,7 @@ class Solver(object):
 		# Watch the first literal in each clause
 		for clause in self.SAT.clauses
 			# Convert clause within watchlist to be a list
-    		watchlist[ list(clause)[0] ].append(clause)
-    	return watchlist
+    		self.watchlist[ list(clause)[0] ].append(clause)
     
     # Updates the watchlist for 
     def updateWatchlist(self,falseLiteral):
