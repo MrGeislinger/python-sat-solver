@@ -1,15 +1,13 @@
 #
 from SAT import *
+
 # Solver object to preform operations on the SAT object
 class Solver(object):
-
     '''
     '''
      
     # Constructor by using data file
     def __init__(self,dataFile):
-        # Import the SAT object
-        #import SAT
         #
         self.SAT = SAT.initFromFile(dataFile)
         # Create SAT object from data file
@@ -42,6 +40,7 @@ class Solver(object):
         # All clauses passed the check so SAT object is solved 
         return True 
 
+    # Check that the clause is consistent with assignment
     def isClauseConsistent(self,clause):
         #
         isTrue = 0 # Only greater than 0 if at least a one literal is true
@@ -59,3 +58,21 @@ class Solver(object):
             	isTrue += value ^ self.SAT.isNeg(literal) #bitwise-XOR
         # Test if at least one literal evaluated is True (1)
         return True if (isTrue > 0) else False
+
+	# Create a watch list to make algoriths simple
+	def createWatchlist(self):
+		self.watchlist = []
+		# Watch the first literal in each clause
+		for clause in self.SAT.clauses
+			# Convert clause within watchlist to be a list
+    		watchlist[ list(clause)[0] ].append(clause)
+    	return watchlist
+    
+    #
+    def updateWatchlist(self,falseLiteral,assignment,verbose):
+		#
+
+
+    # Basic SAT solver alogrithm
+    def solve(self):
+        #
