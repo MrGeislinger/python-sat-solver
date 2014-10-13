@@ -40,12 +40,12 @@ class SAT(object):
         # First line gives us information of data format
         metaData = cnfLines.pop(0).split()
         # Get the number (int) of varaibles and clauses specified by file
-        numOfVars, numOfClauses = int(metaData[2]), int(metaData[3])
+        satInstance.numOfVars,numOfClauses = int(metaData[2]), int(metaData[3])
         # Add clauses from file (skip the first line of metadata)
         for line in cnfLines:
             satInstance.getClauseFromLine(line)
         # Add any missing variables that were missed when reading in file
-        #satInstance.addMissingVarsToDict(numOfVars)
+        satInstance.addMissingVarsToDict()
         return satInstance
 
     # Reads in clause from a line, but assumes every line ends with zero and 
@@ -78,7 +78,7 @@ class SAT(object):
 
     # Add missing variables to varDict skipped over when reading file
     # Function assumes that the number of variables (numOfVars) is correct 
-    def addMissingVarsToDict(self,numOfVars):
+    def addMissingVarsToDict(self):
         # Converts to int if str (else gives -1 since var can't <0)
         isStr = lambda x: int(x) if isinstance(x,str) else -1  
         # Get vars from varDict keys (only str types; vars given by file)
@@ -86,7 +86,7 @@ class SAT(object):
         varsFromFile.add(-1)    #ensure something to remove
         varsFromFile.remove(-1) #get rid of the mappings from non-ints
         # Get the vars not already defined in varDict
-        missingVars = varsFromFile.symmetric_difference(set(range(1,numOfVars+1)))
+        missingVars = varsFromFile.symmetric_difference(set(range(1,self.numOfVars+1)))
         # Iterate over missing variables & add them to varDict in next spot
         for var in missingVars:
             varStr = str(var) #convert to string (would've been given by file)
