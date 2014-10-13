@@ -69,35 +69,40 @@ class Solver(object):
 
     # Updates the watchlist 
     def updateWatchlist(self,falseLiteral):
-		#
-        while watchlist[falseLiteral]:
-            clause = watchlist[falseLiteral][0] #get first watched clause
+		# Loop until...?
+        while self.watchlist[falseLiteral]:
+            clause = self.watchlist[falseLiteral][0] #get first watched clause
+            # Default to say no alternative was found
             foundAlt = False
-            #            
+            # Look for alternative literal for the clause to watch           
             for alt in clause:
+            	# Get the variable and negation piece of the literal in clause
                 v = self.SAT.getVar(alt)
                 a = self.SAT.isNeg(alt)
-            #
-            varAssignment = self.assignment[v]
-            if varAssignment is None or varAssignment == self.SAT.negate(a):
-                foundAlt = True
-                # Get rid of this clause since literal is now True
-                del self.watchlist[falseLiteral][0]
-                self.watchlist[alt].append(clause)
-                break
-            #
+                # Get the current assignment of this variable
+                varAssignment = self.assignment[v]
+                # See that the newly watched literal has the correct property
+                # The variable assignment is None or evaluates to True (1)
+                if varAssignment is None or varAssignment == self.SAT.negate(a):
+                    foundAlt = True
+                    # Get rid of this clause since literal is now True
+                    del self.watchlist[falseLiteral][0]
+                    # Have this clause watch the alt literal now
+                    self.watchlist[alt].append(clause)
+                    break
+            # No alternative has been found after looking through clause
             if not foundAlt:
                 return False
-            #
-            return True
+        # Alternative is found (or loop condition fails?)
+        return True
 
 
     # Basic SAT solver alogrithm that uses recursion
     def simpleSolve(self,var):
         # Check if this is the last assignment to end function call
-        if var == self.numOfVars:
-            yield self.assignment
-            return 
+        if var == self.SAT.numOfVars:
+            #yield self.assignment
+            return self.assignment
 
         #
         for truthValue in [0,1]:
@@ -106,8 +111,8 @@ class Solver(object):
             if self.updateWatchlist( self.SAT.getLit(var) ):
                 #
                 for truthValue in self.simpleSolve(var+1):
-                    #
-                    yield truthValue
+                    return truthValue
+                    #yield truthValue
 
         #
         self.assignment[var] = None
