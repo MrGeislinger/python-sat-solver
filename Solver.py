@@ -71,7 +71,26 @@ class Solver(object):
     # Updates the watchlist for 
     def updateWatchlist(self,falseLiteral):
 		#
-
+        while watchlist[falseLiteral]:
+            clause = watchlist[falseLiteral][0] #get first watched clause
+            foundAlt = False
+            #            
+            for alt in clause:
+                v = self.SAT.getVar(alt)
+                a = self.SAT.isNeg(alt)
+            #
+            if self.assignment[v] is None or 
+               self.assignment[v] == self.SAT.negate(a):
+                foundAlt = True
+                # Get rid of this clause since literal is now True
+                del self.watchlist[falseLiteral][0]
+                self.watchlist[alt].append(clause)
+                break
+            #
+            if not foundAlt:
+                return False
+            #
+            return True
 
 
     # Basic SAT solver alogrithm that uses recursion
