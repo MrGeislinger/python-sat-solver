@@ -69,7 +69,7 @@ class Solver(object):
 
     # Updates the watchlist 
     def updateWatchlist(self,falseLiteral):
-		# Loop until...?
+		# Loop until there's nothing in list of clauses watching this literal
         while self.watchlist[falseLiteral]:
             clause = self.watchlist[falseLiteral][0] #get first watched clause
             # Default to say no alternative was found
@@ -101,21 +101,25 @@ class Solver(object):
     def simpleSolve(self,var):
         # Check if this is the last assignment to end function call
         if var == self.SAT.numOfVars:
-            #yield self.assignment
-            return self.assignment
-
-        #
+            return True #self.assignment
+        
+        # Check over all possible assignments
         for truthValue in [0,1]:
             self.assignment[var] = truthValue
-            #
-            if self.updateWatchlist( self.SAT.getLit(var) ):
-                #
-                for truthValue in self.simpleSolve(var+1):
-                    return truthValue
-                    #yield truthValue
+            # Update the watchlist with the variable's literal with given value
+            if self.updateWatchlist( var << 1 | truthValue ):
+                # Next solved varaible worked, so this assignment solves SAT 
+                if self.simpleSolve(var+1):
+                    return True
 
-        #
+        #TEST        
+        print var, " --> ", self.assignment[var]
+        
+        # Reset and return False since there was a conflict        
         self.assignment[var] = None
+        return False
+            
+
 
 
 
