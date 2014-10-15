@@ -108,12 +108,9 @@ class Solver(object):
             self.assignment[var] = truthValue
             # Update the watchlist with the variable's literal with given value
             if self.updateWatchlist( var << 1 | truthValue ):
-                # Next solved varaible worked, so this assignment solves SAT 
+                # Check if the next variable is solved with all the assignments done
                 if self.simpleSolve(var+1):
                     return True
-
-        #TEST        
-        print var, " --> ", self.assignment[var]
         
         # Reset and return False since there was a conflict        
         self.assignment[var] = None
