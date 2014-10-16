@@ -117,6 +117,43 @@ class Solver(object):
         return False
             
 
+    # SAT solver to find all solutions that uses simpleSolver()
+    def simpleSolveAll(self):
+        # Once one solution is found, add the negative of this clause and find
+        # the next solution. If no new solution can be found, stop and return
+        # soltions in a list
 
+        # List of solutions
+        solutions = []
+
+        # Search for all solutions until exhausted
+        searching = True
+        while True:
+            # Reset the watchlist
+            self.createWatchlist()
+
+            # Will tell us if all solutions have been found
+            searching = self.simpleSolve(0)
+
+            # Break out since we found all solutions
+            if not searching:
+                return solutions
+
+            # Save the resulting solution
+            solutions.append(self.assignment.copy())
+
+            # New clause of negated solution
+            tempNegSol = set()
+            for var in self.assignment:
+                # Get if variable was negated and reverse it
+                negTemp = self.assignment[var] #self.SAT.negate( self.assignment[var] )
+                # Add the literal equivalent to the clause
+                tempNegSol.add( var << 1 | negTemp )
+            # Add new clause 
+            self.SAT.clauses.append(tempNegSol)
+
+            # Reset the assignments
+            for key in self.assignment:
+                self.assignment[key] = None
 
 
