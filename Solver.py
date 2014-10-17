@@ -141,16 +141,15 @@ class Solver(object):
             if not searching:
                 return solutions
 
-            # Create readable string of the solution
-            solStr = "{"
-            # Varaible numbers are defined from the input file
+            # Solution dictionary as defined by the input CNF file
+            solDict = {}
             for i in self.assignment:
-                 solStr += "%s: %d," %(self.SAT.varDict[i], self.assignment[i])
-            # Add final bracket and remove extra comma
-            solStr = strTest[:-1] + "}"
+                # Variable integer as defined by input file
+                varInt = int(self.SAT.varDict[i])
+                solDict[varInt] = self.assignment[i]
 
             # Save the resulting solution
-            solutions.append((self.assignment.copy(),solStr))
+            solutions.append(solDict.copy())
 
             # New clause of negated solution
             tempNegSol = set()
