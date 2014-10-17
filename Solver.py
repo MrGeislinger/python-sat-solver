@@ -70,6 +70,7 @@ class Solver(object):
     # Updates the watchlist 
     def updateWatchlist(self,falseLiteral):
 		# Loop until there's nothing in list of clauses watching this literal
+        foundAlt = False
         while self.watchlist[falseLiteral]:
             clause = self.watchlist[falseLiteral][0] #get first watched clause
             # Default to say no alternative was found
@@ -140,8 +141,16 @@ class Solver(object):
             if not searching:
                 return solutions
 
+            # Create readable string of the solution
+            solStr = "{"
+            # Varaible numbers are defined from the input file
+            for i in self.assignment:
+                 solStr += "%s: %d," %(self.SAT.varDict[i], self.assignment[i])
+            # Add final bracket and remove extra comma
+            solStr = strTest[:-1] + "}"
+
             # Save the resulting solution
-            solutions.append(self.assignment.copy())
+            solutions.append((self.assignment.copy(),solStr))
 
             # New clause of negated solution
             tempNegSol = set()
