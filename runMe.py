@@ -1,8 +1,12 @@
 # Import the Solver class
 from Solver import *
 
+# Ask for file path
+satFile = raw_input("Enter path to CNF file: ")
+
+
 # Create a SAT problem to solve
-x = Solver('data/ex1.cnf')
+x = Solver(satFile)
 
 # Now solve the SAT problem (finding all solutions)
 solutions = x.simpleSolveAll()
