@@ -111,6 +111,7 @@ class Solver(object):
                 # Check if the next variable is solved with all the assignments done
                 if self.simpleSolve(var+1):
                     return True
+
         
         # Reset and return False since there was a conflict        
         self.assignment[var] = None
