@@ -166,3 +166,50 @@ class Solver(object):
                 self.assignment[key] = None
 
 
+    # Iterative solving algorithm that uses backtracking
+    def iterSolve(self, var):
+        # Save solutions
+        solutions = []
+        # Set the list of states to untried for each variable
+        # Possible states are 0-3:
+        #   0 -> Nothing tried yet
+        #   1 -> False tried, not True
+        #   2 -> True tried, not False
+        #   3 -> Tried both True and False
+        state = [0] * self.SAT.numOfVars
+
+        # Loop through all the possibilities
+        while True:
+            # If we went through all the variables
+            if var == self.SAT.numOfVars:
+                # Save solution
+                solutions.append(self.assignment.copy())
+                var -= 1
+                continue
+            # Attempt assigning var a truth value. Can be improved by deciding 
+            # which value to attempt first
+            tried = False
+            for a in [0, 1]:
+                # Only true when {a=0;s=0,2} and {a=1;s=1,2}
+                if (state[var] >> a) & 1 == 0:
+                    tried = True
+                    # Set the bit indicating a has been tried for var
+                    state[var] |= 1 << a
+                    self.assignment[var] = a
+                    if not self.updateWatchlist(var << 1 | a):
+                        self.assignment[var] = None
+                    else:
+                        var += 1
+                        break
+
+            if not tried:
+                # No more backtracking so return solutions found
+                if var == 0:
+                    return solutions
+                # Backtrack for other solutions
+                else:
+                    self.assignment[var] = None
+                    state[var] = 0
+                    var -= 1
+
+
