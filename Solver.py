@@ -212,4 +212,10 @@ class Solver(object):
                     state[var] = 0
                     var -= 1
 
-
+    
+    # Find all solutions by iterative solver using iterSolve
+    def iterSolveAll(self):
+        # Create watchlist and return all the solutions of SAT object
+        self.createWatchlist()
+        return self.iterSolve(0)
+        
